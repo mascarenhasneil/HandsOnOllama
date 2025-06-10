@@ -14,7 +14,7 @@ It includes the following operations:
 The module leverages constants for fixed parameters and demonstrates a typical workflow for testing and manipulating models using the Ollama API.
 """
 
-from typing import Final, Any, Dict, List
+from typing import Final, Any, Dict
 import pprint as pp
 import ollama as olm
 
