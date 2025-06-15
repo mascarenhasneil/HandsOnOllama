@@ -14,9 +14,10 @@ import logging
 from typing import List
 from langchain_community.document_loaders import UnstructuredPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 import streamlit as st
 
-def ingest_pdf(doc_path: str) -> List:
+def ingest_pdf(doc_path: str) -> List[Document]:
     """
     Load PDF documents from the specified path.
 
