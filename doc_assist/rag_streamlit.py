@@ -19,9 +19,9 @@ from langchain_core.runnables import RunnableSerializable
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_community.vectorstores import Chroma
 
-from chain import create_chain
-from retriever import create_retriever
-from vector_db import upload_and_process_pdf
+from doc_assist.chain import create_chain
+from doc_assist.retriever import create_retriever
+from doc_assist.vector_db import upload_and_process_pdf
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,7 +29,7 @@ MODEL_NAME: Final[str] = "llama3.2:1b"
 INPUT_PROMPT: Final[str] = "Enter your question:"
 
 
-def main() -> None:
+def rag_streamlit() -> None:
     """
     Main entry point for the Document Assistant Streamlit application.
 
@@ -40,7 +40,7 @@ def main() -> None:
         None.
 
     Example:
-        >>> main()
+        >>> rag_streamlit()
         # Launches the Streamlit app for document Q&A.
     """
     logging.info("Starting Document Assistant Streamlit app.")
@@ -126,5 +126,4 @@ def process_user_input(user_input: str, chain: RunnableSerializable[Union[str, N
             st.error(f"An error occurred: {str(e)}")
 
 
-if __name__ == "__main__":
-    main()
+rag_streamlit()

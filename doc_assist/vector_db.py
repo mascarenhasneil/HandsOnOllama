@@ -29,7 +29,7 @@ import ollama
 import streamlit as st
 from langchain_community.vectorstores import Chroma
 from langchain_ollama import OllamaEmbeddings
-from utils import ingest_pdf, split_documents
+from doc_assist.utils import ingest_pdf, split_documents
 
 DOC_PATH: str = "./eggs"
 EMBEDDING_MODEL: Final[str] = "nomic-embed-text:latest"

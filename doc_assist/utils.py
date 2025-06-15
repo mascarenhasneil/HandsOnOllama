@@ -68,3 +68,4 @@ def split_documents(documents: List) -> List:
     chunks = text_splitter.split_documents(documents)
     logging.info("Documents split into chunks.")
     return chunks
+

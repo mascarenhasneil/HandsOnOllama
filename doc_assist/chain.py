@@ -61,3 +61,4 @@ def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnableSer
 
     logging.info("Chain created with preserved syntax.")
     return chain
+

@@ -57,3 +57,4 @@ def create_retriever(vector_db: Chroma, llm: ChatOllama) -> MultiQueryRetriever:
     )
     logging.info("Retriever created.")
     return retriever
+
