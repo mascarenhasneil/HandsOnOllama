@@ -40,20 +40,17 @@ def main() -> None:
 
     logging.info("Starting Document Assistant Streamlit app.")
 
-    # Add a stop button to halt the app
-    if st.button("Stop App"):
+    # Add a stop button to halt the app in the sidebar
+    if st.sidebar.button("Stop App"):
         st.warning("The app has been stopped.")
         logging.info("Document Assistant Streamlit app stopped.")
         st.stop()
 
-    # Add a close button to halt the app and display a message
-    if st.button("Close App"):
-        st.warning(
-            "The app has been closed. Please stop the app manually from the terminal."
-        )
+    # Add a close button to halt the app and display a message in the sidebar
+    if st.sidebar.button("Close App"):
+        st.warning("The app has been closed. Please stop the app manually from the terminal.")
         logging.info("Document Assistant Streamlit app closed.")
         st.stop()
-
     # Initialize the language model and vector database
     st.info("Initializing the language model and vector database...")
     chain = initialize_llm_and_vector_db()
