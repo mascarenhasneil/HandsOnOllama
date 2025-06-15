@@ -31,9 +31,9 @@ CUSTOM_MODEL_SYSTEM: Final[str] = (
 CUSTOM_MODEL_PARAMETERS: Final[Dict[str, float]] = {"temperature": TEMPERATURE}
 
 # List available models
-models_lists: Any = olm.list()
+available_models: Any = olm.list()
 print("Available models: \n")
-pp.pprint(models_lists)  # Pretty print the list
+pp.pprint(available_models)  # Pretty print the list
 
 # Chat with the model using Ollama's chat API
 res = olm.chat(
