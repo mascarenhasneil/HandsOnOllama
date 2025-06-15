@@ -1,9 +1,9 @@
 """
 module: rag_streamlit.py
 A simple Streamlit application for a Document Assistant using RAG (Retrieval-Augmented Generation) with LangChain and Ollama.
+
 This module serves as the main entry point for the Streamlit app, integrating components from other modules such as retriever, chain, and vector_db.
 This application allows users to ask questions about a PDF document, leveraging a vector database for context retrieval and a language model for response generation.
-
 """
 
 from typing import Final
@@ -28,10 +28,13 @@ INPUT_PROMPT: Final[str] = "Enter your question:"
 
 def main() -> None:
     """
-    Main function to run the Streamlit app.
-
-    This function initializes the language model, loads the vector database,
-    creates the retriever and chain, and processes user input to generate a response.
+    Main entry point for the Document Assistant Streamlit application.
+    
+    This function initializes the language model and vector database, creates the retriever and chain,
+    and processes user input to generate responses. It also provides options via Streamlit buttons to stop or close the application.
+    
+    Returns:
+        None.
     """
     st.title("Document Assistant")
 
@@ -93,11 +96,11 @@ def initialize_llm_and_vector_db() -> RunnablePassthrough:
 
 def process_user_input(user_input: str, chain: RunnablePassthrough) -> None:
     """
-    Process the user input, generate a response using the RAG pipeline, and display it in the Streamlit app.
+    Process the user input and generate a response using the provided chain.
 
     Args:
         user_input (str): The question or input provided by the user.
-        chain (RunnablePassthrough): The initialized chain for generating responses.
+        chain (RunnablePassthrough): The chain used to generate responses.
     """
     logging.info("Processing user input.")
     with st.spinner("Generating response..."):
