@@ -212,4 +212,4 @@ cython_debug/
 *.github
 
 # Chroma
-chroma_db
+chroma_db/
