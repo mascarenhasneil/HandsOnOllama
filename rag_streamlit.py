@@ -6,11 +6,11 @@ This module serves as the main entry point for the Streamlit app, integrating co
 This application allows users to ask questions about a PDF document, leveraging a vector database for context retrieval and a language model for response generation.
 """
 
-from typing import Final
+from typing import Final, Union
 import logging
 import streamlit as st
 from langchain_ollama import ChatOllama
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnableSerializable
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_community.vectorstores import Chroma
 
@@ -69,7 +69,7 @@ def main() -> None:
         st.info("Please enter a question to get started.")
 
 
-def initialize_llm_and_vector_db() -> RunnablePassthrough:
+def initialize_llm_and_vector_db() -> RunnableSerializable[Union[str, None], str]:
     """
     Initialize the language model, vector database, retriever, and chain.
 
@@ -89,18 +89,18 @@ def initialize_llm_and_vector_db() -> RunnablePassthrough:
     retriever: MultiQueryRetriever = create_retriever(vector_db, llm)
 
     # Create the chain
-    chain = create_chain(retriever, llm)
+    chain: RunnableSerializable[Union[str, None], str] = create_chain(retriever, llm)
 
     return chain
 
 
-def process_user_input(user_input: str, chain: RunnablePassthrough) -> None:
+def process_user_input(user_input: str, chain: RunnableSerializable[Union[str, None], str]) -> None:
     """
     Process the user input and generate a response using the provided chain.
 
     Args:
         user_input (str): The question or input provided by the user.
-        chain (RunnablePassthrough): The chain used to generate responses.
+        chain (RunnableSerializable[Union[str, None], str]): The chain used to generate responses.
     """
     logging.info("Processing user input.")
     with st.spinner("Generating response..."):

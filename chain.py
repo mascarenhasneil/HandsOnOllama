@@ -11,14 +11,17 @@ Functions:
 """
 
 import logging
+from typing import Union
+
 from langchain.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
-from langchain_core.output_parsers import StrOutputParser
 from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_core.runnables import RunnablePassthrough, RunnableSerializable
+from langchain_core.output_parsers import StrOutputParser
+
 from langchain_ollama import ChatOllama
 
 
-def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePassthrough:
+def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnableSerializable[Union[str, None], str]:
     """
     Create the chain for the RAG pipeline.
 
@@ -27,7 +30,7 @@ def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePas
         llm (ChatOllama): The language model to generate responses.
 
     Returns:
-        RunnablePassthrough: A processing chain that retrieves context and generates responses.
+        RunnableSerializable[Union[str, None], str]: A processing chain that retrieves context and generates responses.
 
     """
     # Define the prompt template for the chain
@@ -38,7 +41,7 @@ def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePas
 
     prompt = ChatPromptTemplate.from_template(template)
 
-    chain: RunnablePassthrough = (
+    chain: RunnableSerializable[Union[str, None], str] = (
         {"context": retriever, "question": RunnablePassthrough()}
         | prompt
         | llm
