@@ -10,9 +10,15 @@ import logging
 from typing import Final
 from langchain.prompts import PromptTemplate
 from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_community.vectorstores import Chroma
+from langchain_ollama import ChatOllama
 
-def create_retriever(vector_db, llm):
+
+
+def create_retriever(vector_db: Chroma, llm: ChatOllama) -> MultiQueryRetriever:
     """Create a multi-query retriever."""
+    
+    # Define the prompt template for generating alternative questions
     query_prompt: Final = PromptTemplate(
         input_variables=["question"],
         template="""You are an AI language model assistant. Your task is to generate five
