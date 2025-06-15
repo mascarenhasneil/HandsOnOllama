@@ -1,7 +1,21 @@
 """
 module: vector_db
-This module handles the creation and loading of a vector database using Chroma and Ollama embeddings. It provides functionality to ingest a PDF document, split it into chunks, and store the embeddings in a persistent vector database. This vector database can be used for retrieval-augmented generation (RAG) in a document assistant application.
-    
+
+This module handles the creation and loading of a vector database using Chroma and Ollama embeddings. 
+It provides functionality to ingest a PDF document, split it into chunks, and store the embeddings in a 
+persistent vector database. This vector database can be used for retrieval-augmented generation (RAG) 
+in a document assistant application.
+
+Functions:
+    load_vector_db() -> Chroma | None:
+        Loads or creates the vector database.
+
+Constants:
+    VECTOR_STORE_NAME (str): The name of the vector store.
+    PERSIST_DIRECTORY (str): The directory to persist the vector database.
+    DOC_PATH (str): The path to the PDF document to be ingested.
+    EMBEDDING_MODEL (str): The name of the embedding model to use.
+
 """
 
 import os
@@ -20,7 +34,13 @@ EMBEDDING_MODEL: Final[str] = "nomic-embed-text:latest"
 
 @st.cache_resource
 def load_vector_db() -> Chroma | None:
-    """Load or create the vector database."""
+    """
+    Load or create the vector database.
+
+    Returns:
+        Chroma | None: The loaded or newly created vector database, or None if the document ingestion fails.
+
+    """
     # Pull the embedding model if not already available
     ollama.pull(EMBEDDING_MODEL)
 
