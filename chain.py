@@ -1,6 +1,13 @@
 """
+module: chain.py
+
 This module handles the creation of a processing chain for the RAG (Retrieval-Augmented Generation) pipeline.
-# It uses LangChain to create a chain that retrieves context from a vector database and generates responses using a language model.
+It uses LangChain to create a chain that retrieves context from a vector database and generates responses using a language model.
+
+Functions:
+    create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePassthrough:
+        Creates a processing chain for the RAG pipeline.
+
 """
 
 import logging
@@ -13,11 +20,16 @@ from langchain_ollama import ChatOllama
 
 def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePassthrough:
     """
-    Create the chain with preserved syntax.
-    
+    Create the chain for the RAG pipeline.
+
+    Args:
+        retriever (MultiQueryRetriever): The retriever to fetch context from the vector database.
+        llm (ChatOllama): The language model to generate responses.
+
+    Returns:
+        RunnablePassthrough: A processing chain that retrieves context and generates responses.
+
     """
-    
-    
     # Define the prompt template for the chain
     template: str = """Answer the question based ONLY on the following context:
     {context}
