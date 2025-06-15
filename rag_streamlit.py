@@ -11,7 +11,10 @@ import logging
 import streamlit as st
 from langchain_ollama import ChatOllama
 from langchain_core.runnables import RunnablePassthrough
+from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_community.vectorstores import Chroma
 
+# Importing necessary modules for the Document Assistant application
 from retriever import create_retriever
 from chain import create_chain
 from vector_db import load_vector_db
@@ -55,7 +58,7 @@ def main() -> None:
     user_input: str = st.text_input(INPUT_PROMPT, "")
 
     if user_input:
-        logging.info(f"User input received: {user_input}")
+        logging.info("User input received: %s", user_input)
         # Process the user input
         process_user_input(user_input, chain)
 
@@ -71,16 +74,16 @@ def initialize_llm_and_vector_db() -> RunnablePassthrough:
         RunnablePassthrough: The initialized chain for generating responses.
     """
     # Initialize the language model
-    llm = ChatOllama(model=MODEL_NAME)
+    llm = ChatOllama(model=MODEL_NAME, seed=42, temperature=1.0)
 
     # Load the vector database
-    vector_db = load_vector_db()
+    vector_db: Chroma | None = load_vector_db()
     if vector_db is None:
         st.error("Failed to load or create the vector database.")
         st.stop()
 
     # Create the retriever
-    retriever = create_retriever(vector_db, llm)
+    retriever: MultiQueryRetriever = create_retriever(vector_db, llm)
 
     # Create the chain
     chain = create_chain(retriever, llm)
@@ -104,9 +107,9 @@ def process_user_input(user_input: str, chain: RunnablePassthrough) -> None:
 
             st.markdown("**Assistant:**")
             st.write(response)
-            logging.info(f"Response generated: {response}")
+            logging.info("Response generated: %s", response)
         except (ValueError, RuntimeError, KeyError, FileNotFoundError) as e:
-            logging.error(f"Error processing user input: {str(e)}")
+            logging.error("Error processing user input: %s", str(e))
             st.error(f"An error occurred: {str(e)}")
 
 
