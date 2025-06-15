@@ -8,12 +8,15 @@
 - User feedback mechanisms for Streamlit sidebar buttons (Stop/Close App).
 - Robust error handling for file operations and vector database interactions.
 - Coding guidelines section in README for contributors.
+- Migrated all core modules into the `doc_assist` package for improved modularity and maintainability.
+- Added a new `main.py` entry point that launches the Streamlit app via `doc_assist.rag_streamlit.rag_streamlit()`.
 
 ### Changed
 - Refactored `upload_and_process_pdf` to avoid code duplication with `create_or_load_vector_db`.
 - Improved error messages and logging throughout the codebase.
 - Enhanced docstrings with parameter details and examples.
-- Updated README to reflect new coding standards and error handling improvements.
+- Updated README to reflect new coding standards, error handling improvements, and package structure under `doc_assist`.
+- Renamed the main Streamlit entry function to `rag_streamlit()` in `doc_assist/rag_streamlit.py`.
 
 ### Fixed
 - Fixed potential issues with missing or invalid PDF uploads.
