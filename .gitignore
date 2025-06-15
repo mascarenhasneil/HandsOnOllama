@@ -211,5 +211,5 @@ cython_debug/
 # GitHub
 *.github
 
-# Croma
+# Chroma
 chroma_db
