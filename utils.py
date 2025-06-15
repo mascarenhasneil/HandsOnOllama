@@ -1,8 +1,8 @@
 """
 module: utils.py
 Utility functions for the Document Assistant application.
-This module provides functions to ingest PDF documents and split them into smaller chunks for processing.
 
+This module provides functions to ingest PDF documents and split them into smaller chunks for processing.
 """
 
 import os
@@ -13,7 +13,18 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import streamlit as st
 
 def ingest_pdf(doc_path: str) -> List:
-    """Load PDF documents."""
+    """
+    Load PDF documents from the specified path.
+
+    Args:
+        doc_path (str): The file path to the PDF document.
+
+    Returns:
+        List: A list of loaded PDF documents. Returns an empty list if the file is not found.
+
+    Raises:
+        FileNotFoundError: If the specified PDF file does not exist.
+    """
     if os.path.exists(doc_path):
         loader = UnstructuredPDFLoader(file_path=doc_path)
         data = loader.load()
@@ -25,7 +36,15 @@ def ingest_pdf(doc_path: str) -> List:
         return []
 
 def split_documents(documents: List) -> List:
-    """Split documents into smaller chunks."""
+    """
+    Split documents into smaller chunks for processing.
+
+    Args:
+        documents (List): A list of documents to be split into smaller chunks.
+
+    Returns:
+        List: A list of document chunks after splitting.
+    """
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=300)
     chunks = text_splitter.split_documents(documents)
     logging.info("Documents split into chunks.")
