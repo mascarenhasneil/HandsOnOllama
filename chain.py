@@ -7,10 +7,18 @@ import logging
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_ollama import ChatOllama
 
-def create_chain(retriever, llm) -> RunnablePassthrough:
-    """Create the chain with preserved syntax."""
-    # RAG prompt
+
+def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnablePassthrough:
+    """
+    Create the chain with preserved syntax.
+    
+    """
+    
+    
+    # Define the prompt template for the chain
     template: str = """Answer the question based ONLY on the following context:
     {context}
     Question: {question}
