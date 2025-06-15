@@ -29,7 +29,18 @@ def create_retriever(vector_db: Chroma, llm: ChatOllama) -> MultiQueryRetriever:
     Returns:
         MultiQueryRetriever: A retriever that generates multiple queries to improve document retrieval.
 
+    Raises:
+        ValueError: If vector_db or llm is None.
+
+    Example:
+        >>> retriever = create_retriever(vector_db, llm)
+        >>> results = retriever.get_relevant_documents("What is the deductible?")
     """
+    if vector_db is None:
+        raise ValueError("vector_db must not be None.")
+    if llm is None:
+        raise ValueError("llm must not be None.")
+
     # Define the prompt template for generating alternative questions
     query_prompt: Final = PromptTemplate(
         input_variables=["question"],

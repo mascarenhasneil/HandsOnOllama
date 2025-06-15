@@ -3,6 +3,10 @@ module: utils.py
 Utility functions for the Document Assistant application.
 
 This module provides functions to ingest PDF documents and split them into smaller chunks for processing.
+
+Example:
+    >>> docs = ingest_pdf("./eggs/sample.pdf")
+    >>> chunks = split_documents(docs)
 """
 
 import os
@@ -20,7 +24,7 @@ def ingest_pdf(doc_path: str) -> List:
         doc_path (str): The file path to the PDF document.
 
     Returns:
-        List: A list of loaded PDF documents. Returns an empty list if the file is not found.
+        List: A list of loaded PDF documents. Returns an empty list if the file is not found or an error occurs.
 
     Raises:
         FileNotFoundError: If the specified PDF file does not exist.
@@ -55,6 +59,10 @@ def split_documents(documents: List) -> List:
 
     Returns:
         List: A list of document chunks after splitting.
+
+    Example:
+        >>> docs = ingest_pdf("./eggs/sample.pdf")
+        >>> chunks = split_documents(docs)
     """
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1200, chunk_overlap=300)
     chunks = text_splitter.split_documents(documents)

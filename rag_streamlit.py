@@ -4,23 +4,26 @@ A simple Streamlit application for a Document Assistant using RAG (Retrieval-Aug
 
 This module serves as the main entry point for the Streamlit app, integrating components from other modules such as retriever, chain, and vector_db.
 This application allows users to ask questions about a PDF document, leveraging a vector database for context retrieval and a language model for response generation.
+
+Example:
+    $ streamlit run rag_streamlit.py
+    # Upload a PDF and ask questions in the UI.
 """
 
-from typing import Final, Union
 import logging
+from typing import Final, Union
+
 import streamlit as st
 from langchain_ollama import ChatOllama
 from langchain_core.runnables import RunnableSerializable
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_community.vectorstores import Chroma
 
-# Importing necessary modules for the Document Assistant application
-from retriever import create_retriever
 from chain import create_chain
+from retriever import create_retriever
 from vector_db import upload_and_process_pdf
 
 logging.basicConfig(level=logging.INFO)
-
 
 MODEL_NAME: Final[str] = "llama3.2:1b"
 INPUT_PROMPT: Final[str] = "Enter your question:"
@@ -35,6 +38,10 @@ def main() -> None:
 
     Returns:
         None.
+
+    Example:
+        >>> main()
+        # Launches the Streamlit app for document Q&A.
     """
     logging.info("Starting Document Assistant Streamlit app.")
     st.title("Document Assistant")
@@ -42,7 +49,7 @@ def main() -> None:
     # Upload and process the PDF file
     vector_db: Chroma | None = upload_and_process_pdf()
     if vector_db is None:
-        st.error("Failed to initialize the vector database. Please upload a valid PDF file.")
+        st.error("Failed to initialize the vector database. Please upload a valid PDF file (PDF format only, not corrupted, and not empty).")
         return
 
     st.info("Initializing the language model and vector database...")
@@ -76,10 +83,13 @@ def initialize_llm_and_vector_db(vector_db) -> RunnableSerializable[Union[str, N
 
     Returns:
         RunnablePassthrough: The initialized chain for generating responses.
+
+    Example:
+        >>> initialize_llm_and_vector_db(vector_db)
+        # Initializes and returns the chain for the document Q&A.
     """
     # Initialize the language model
     llm = ChatOllama(model=MODEL_NAME, seed=42, temperature=1.0)
-
 
     # Create the retriever
     retriever: MultiQueryRetriever = create_retriever(vector_db=vector_db, llm=llm)
@@ -97,6 +107,10 @@ def process_user_input(user_input: str, chain: RunnableSerializable[Union[str, N
     Args:
         user_input (str): The question or input provided by the user.
         chain (RunnableSerializable[Union[str, None], str]): The chain used to generate responses.
+
+    Example:
+        >>> process_user_input("What is the capital of France?", chain)
+        # Processes the input and displays the response in the Streamlit app.
     """
     logging.info("Processing user input.")
     with st.spinner("Generating response..."):
@@ -114,4 +128,3 @@ def process_user_input(user_input: str, chain: RunnableSerializable[Union[str, N
 
 if __name__ == "__main__":
     main()
-   # st.stop()

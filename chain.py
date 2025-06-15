@@ -32,7 +32,18 @@ def create_chain(retriever: MultiQueryRetriever, llm: ChatOllama) -> RunnableSer
     Returns:
         RunnableSerializable[Union[str, None], str]: A processing chain that retrieves context and generates responses.
 
+    Raises:
+        ValueError: If retriever or llm is None.
+
+    Example:
+        >>> chain = create_chain(retriever, llm)
+        >>> result = chain.invoke("What is the deductible?")
     """
+    if retriever is None:
+        raise ValueError("retriever must not be None.")
+    if llm is None:
+        raise ValueError("llm must not be None.")
+
     # Define the prompt template for the chain
     template: str = """Answer the question based ONLY on the following context:
     {context}
