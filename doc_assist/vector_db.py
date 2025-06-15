@@ -35,7 +35,7 @@ DOC_PATH: str = "./eggs"
 EMBEDDING_MODEL: Final[str] = "nomic-embed-text:latest"
 
 @st.cache_resource
-def create_or_load_vector_db(file_path: str = DOC_PATH, vector_store_name: str = "Sample") -> Chroma | None:
+def create_or_load_vector_db(file_path: str, vector_store_name: str = "Sample") -> Chroma | None:
     """
     Load or create the vector database for a given PDF document.
 
