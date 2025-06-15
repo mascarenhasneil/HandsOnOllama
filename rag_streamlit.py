@@ -17,7 +17,7 @@ from langchain_community.vectorstores import Chroma
 # Importing necessary modules for the Document Assistant application
 from retriever import create_retriever
 from chain import create_chain
-from vector_db import load_vector_db
+from vector_db import upload_and_process_pdf
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,20 +29,28 @@ INPUT_PROMPT: Final[str] = "Enter your question:"
 def main() -> None:
     """
     Main entry point for the Document Assistant Streamlit application.
-    
+
     This function initializes the language model and vector database, creates the retriever and chain,
     and processes user input to generate responses. It also provides options via Streamlit buttons to stop or close the application.
-    
+
     Returns:
         None.
     """
+    logging.info("Starting Document Assistant Streamlit app.")
     st.title("Document Assistant")
 
-    logging.info("Starting Document Assistant Streamlit app.")
+    # Upload and process the PDF file
+    vector_db: Chroma | None = upload_and_process_pdf()
+    if vector_db is None:
+        st.error("Failed to initialize the vector database. Please upload a valid PDF file.")
+        return
+
+    st.info("Initializing the language model and vector database...")
+    chain = initialize_llm_and_vector_db(vector_db=vector_db)
 
     # Add a stop button to halt the app in the sidebar
     if st.sidebar.button("Stop App"):
-        st.warning("The app has been stopped.")
+        st.warning("The app has been stopped. Please close the terminal to exit.")
         logging.info("Document Assistant Streamlit app stopped.")
         st.stop()
 
@@ -51,9 +59,6 @@ def main() -> None:
         st.warning("The app has been closed. Please stop the app manually from the terminal.")
         logging.info("Document Assistant Streamlit app closed.")
         st.stop()
-    # Initialize the language model and vector database
-    st.info("Initializing the language model and vector database...")
-    chain = initialize_llm_and_vector_db()
 
     user_input: str = st.text_input(INPUT_PROMPT, "")
 
@@ -61,12 +66,11 @@ def main() -> None:
         logging.info("User input received: %s", user_input)
         # Process the user input
         process_user_input(user_input, chain)
-
     else:
         st.info("Please enter a question to get started.")
 
 
-def initialize_llm_and_vector_db() -> RunnableSerializable[Union[str, None], str]:
+def initialize_llm_and_vector_db(vector_db) -> RunnableSerializable[Union[str, None], str]:
     """
     Initialize the language model, vector database, retriever, and chain.
 
@@ -76,17 +80,12 @@ def initialize_llm_and_vector_db() -> RunnableSerializable[Union[str, None], str
     # Initialize the language model
     llm = ChatOllama(model=MODEL_NAME, seed=42, temperature=1.0)
 
-    # Load the vector database
-    vector_db: Chroma | None = load_vector_db()
-    if vector_db is None:
-        st.error("Failed to load or create the vector database.")
-        st.stop()
 
     # Create the retriever
-    retriever: MultiQueryRetriever = create_retriever(vector_db, llm)
+    retriever: MultiQueryRetriever = create_retriever(vector_db=vector_db, llm=llm)
 
     # Create the chain
-    chain: RunnableSerializable[Union[str, None], str] = create_chain(retriever, llm)
+    chain: RunnableSerializable[Union[str, None], str] = create_chain(retriever=retriever, llm=llm)
 
     return chain
 
@@ -115,3 +114,4 @@ def process_user_input(user_input: str, chain: RunnableSerializable[Union[str, N
 
 if __name__ == "__main__":
     main()
+   # st.stop()
