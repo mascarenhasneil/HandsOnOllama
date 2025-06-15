@@ -24,12 +24,23 @@ def ingest_pdf(doc_path: str) -> List:
 
     Raises:
         FileNotFoundError: If the specified PDF file does not exist.
+
+    Example:
+        >>> documents = ingest_pdf("./data/sample.pdf")
+        >>> if documents:
+        >>>     print("PDF loaded successfully.")
     """
+    st.info("Ingesting PDF to Knowledge Database...")
     if os.path.exists(doc_path):
-        loader = UnstructuredPDFLoader(file_path=doc_path)
-        data = loader.load()
-        logging.info("PDF loaded successfully.")
-        return data
+        try:
+            loader = UnstructuredPDFLoader(file_path=doc_path)
+            data = loader.load()
+            logging.info("PDF loaded successfully.")
+            return data
+        except (IOError, ValueError) as e:
+            logging.error("Error loading PDF: %s", e)
+            st.error("An error occurred while loading the PDF. Please check the file and try again.")
+            return []
     else:
         logging.error("PDF file not found at path: %s", doc_path)
         st.error("PDF file not found at path")
