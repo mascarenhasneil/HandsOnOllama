@@ -10,6 +10,8 @@ from typing import Final
 import logging
 import streamlit as st
 from langchain_ollama import ChatOllama
+from langchain_core.runnables import RunnablePassthrough
+
 from retriever import create_retriever
 from chain import create_chain
 from vector_db import load_vector_db
@@ -20,6 +22,7 @@ logging.basicConfig(level=logging.INFO)
 MODEL_NAME: Final[str] = "llama3.2:1b"
 INPUT_PROMPT: Final[str] = "Enter your question:"
 
+
 def main() -> None:
     """
     Main function to run the Streamlit app.
@@ -29,35 +32,83 @@ def main() -> None:
     """
     st.title("Document Assistant")
 
-    user_input : str = st.text_input(INPUT_PROMPT, "")
+    logging.info("Starting Document Assistant Streamlit app.")
+
+    # Add a stop button to halt the app
+    if st.button("Stop App"):
+        st.warning("The app has been stopped.")
+        logging.info("Document Assistant Streamlit app stopped.")
+        st.stop()
+
+    # Add a close button to halt the app and display a message
+    if st.button("Close App"):
+        st.warning(
+            "The app has been closed. Please stop the app manually from the terminal."
+        )
+        logging.info("Document Assistant Streamlit app closed.")
+        st.stop()
+
+    # Initialize the language model and vector database
+    st.info("Initializing the language model and vector database...")
+    chain = initialize_llm_and_vector_db()
+
+    user_input: str = st.text_input(INPUT_PROMPT, "")
+
     if user_input:
-        with st.spinner("Generating response..."):
-            try:
-                response = process_user_input(user_input)
-                st.markdown("**Assistant:**")
-                logging.info("Response generated successfully.")
-                st.write(response)
-            except (ValueError, RuntimeError, KeyError, TypeError, ConnectionError) as e:
-                logging.error("Error processing user input: %s", e)
-                st.error(f"An error occurred: {str(e)}")
+        logging.info(f"User input received: {user_input}")
+        # Process the user input
+        process_user_input(user_input, chain)
+
     else:
         st.info("Please enter a question to get started.")
 
-def process_user_input(user_input: str) -> str:
+
+def initialize_llm_and_vector_db() -> RunnablePassthrough:
     """
-    Process user input and return the response.
-    This function initializes the language model, loads the vector database,
-    creates the retriever and chain, and generates a response based on the user input.
+    Initialize the language model, vector database, retriever, and chain.
+
+    Returns:
+        RunnablePassthrough: The initialized chain for generating responses.
     """
-    logging.info("Processing user input.")
+    # Initialize the language model
     llm = ChatOllama(model=MODEL_NAME)
+
+    # Load the vector database
     vector_db = load_vector_db()
     if vector_db is None:
-        raise ValueError("Failed to load or create the vector database.")
+        st.error("Failed to load or create the vector database.")
+        st.stop()
+
+    # Create the retriever
     retriever = create_retriever(vector_db, llm)
+
+    # Create the chain
     chain = create_chain(retriever, llm)
-    logging.info("Chain created successfully.")
-    return chain.invoke(input=user_input)
+
+    return chain
+
+
+def process_user_input(user_input: str, chain: RunnablePassthrough) -> None:
+    """
+    Process the user input, generate a response using the RAG pipeline, and display it in the Streamlit app.
+
+    Args:
+        user_input (str): The question or input provided by the user.
+        chain (RunnablePassthrough): The initialized chain for generating responses.
+    """
+    logging.info("Processing user input.")
+    with st.spinner("Generating response..."):
+        try:
+            # Get the response
+            response = chain.invoke(input=user_input)
+
+            st.markdown("**Assistant:**")
+            st.write(response)
+            logging.info(f"Response generated: {response}")
+        except (ValueError, RuntimeError, KeyError, FileNotFoundError) as e:
+            logging.error(f"Error processing user input: {str(e)}")
+            st.error(f"An error occurred: {str(e)}")
+
 
 if __name__ == "__main__":
     main()
