@@ -8,7 +8,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-def create_chain(retriever, llm):
+def create_chain(retriever, llm) -> RunnablePassthrough:
     """Create the chain with preserved syntax."""
     # RAG prompt
     template: str = """Answer the question based ONLY on the following context:
