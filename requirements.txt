@@ -12,3 +12,4 @@ unstructured[all-docs]
 unstructured
 pikepdf
 pdfplumber
+streamlit
