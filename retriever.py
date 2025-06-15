@@ -4,6 +4,10 @@ module: retriever.py
 Module for creating a retriever for the Document Assistant application.
 This module provides functions to create a multi-query retriever using LangChain.
 
+Functions:
+    create_retriever(vector_db: Chroma, llm: ChatOllama) -> MultiQueryRetriever:
+        Creates a multi-query retriever using a vector database and a language model.
+
 """
 
 import logging
@@ -14,10 +18,18 @@ from langchain_community.vectorstores import Chroma
 from langchain_ollama import ChatOllama
 
 
-
 def create_retriever(vector_db: Chroma, llm: ChatOllama) -> MultiQueryRetriever:
-    """Create a multi-query retriever."""
-    
+    """
+    Create a multi-query retriever.
+
+    Args:
+        vector_db (Chroma): The vector database to retrieve documents from.
+        llm (ChatOllama): The language model used to generate alternative queries.
+
+    Returns:
+        MultiQueryRetriever: A retriever that generates multiple queries to improve document retrieval.
+
+    """
     # Define the prompt template for generating alternative questions
     query_prompt: Final = PromptTemplate(
         input_variables=["question"],
